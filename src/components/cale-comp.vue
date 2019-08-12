@@ -59,6 +59,7 @@ export default {
   },
   methods: {
     // 初始化日历
+    // isClickToday参数只是为了处理点击“今天”的判断
     initCalendar(isClickToday = false) {
       const nowDate = new Date()
       this.viewDate(nowDate, isClickToday)
@@ -68,7 +69,6 @@ export default {
       this.currentShowDate = Utility.formatDate(nowDate, 'yyyyMMdd')
       const year = nowDate.getFullYear()
       const month = nowDate.getMonth() + 1
-      console.log('当前月份', month)
       const currentDate = nowDate.getDate()
       this.currentYear = year
       this.currentMonth = month
@@ -93,7 +93,7 @@ export default {
         let curentDay = {
           isCurrentMonth: _thisMonth === month, // 是否是当月时间,只有当月才可以点击和移动变色
           isCurrentDay: _thisDay === currentDate, // 是否是当月的当天
-          isClick: false,
+          isClick: false, // 是否选中
           value: _thisDay,
           month: _thisMonth,
           longStrDate: _currentDate.replace(/-/g, ''),
@@ -109,14 +109,10 @@ export default {
     },
     // 判断是否为闰年
     isLeapYear(year) {
-      if (year % 4 === 0 && year % 100 !== 0) {
+      if ((year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0)) {
         return true
       } else {
-        if (year % 400 === 0) {
-          return true
-        } else {
-          return false
-        }
+        return false
       }
     },
     // 切换日期
@@ -144,6 +140,7 @@ export default {
       })
       this.$emit('checkDay', item)
     },
+    // 赋值具体日期
     checkDays(date) {
       this.viewDate(new Date(date))
     },
@@ -161,9 +158,11 @@ export default {
     //     })
     //   })
     // },
+    // 鼠标移到每一个日期上面事件
     mouseEnterEvent() {
 
     },
+    // 鼠标离开事件
     mouseLeaveEvent() {
 
     }
